@@ -1,0 +1,108 @@
+#blog_post_info_block {
+    margin-top: 10px;
+}
+/*踩赞总体样式*/
+#div_digg {
+    float: right;
+    margin-bottom: 10px;
+    margin-right: 30px;
+    font-size: 12px;
+    width: 125px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/*点赞样式*/
+.diggit {
+    float: left;
+    width: 46px;
+    height: 52px;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 2px;
+    padding-top: 5px;
+    background: url(/static/upup.gif) no-repeat;
+}
+.diggnum {
+    font-size: 14px;
+    color: #075db3;
+    font-family: Verdana;
+}
+
+/*踩样式*/
+.buryit {
+    float: left;
+    width: 46px;
+    height: 52px;
+    text-align: center;
+    cursor: pointer;
+    margin-left: 20px;
+    margin-top: 2px;
+    padding-top: 5px;
+    background: url(/static/downdown.gif) no-repeat;
+}
+.burynum {
+    font-size: 14px;
+    color: #075db3;
+    font-family: Verdana;
+}
+
+/*错误信息样式*/
+.diggword {
+    margin-top: 5px;
+    margin-left: 0;
+    font-size: 12px;
+    color: gray;
+}
+
+/*评论用户名样式*/
+.div_comment .author {
+    padding-left: 10px;
+    color: #555;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    width: 320px;
+    height: 20px;
+    background-image: none;
+}
+#div_comment p {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/*评论标题样式*/
+#comment_title {
+    font: normal normal 16px/35px "Microsoft YaHei";
+    margin: 10px 0 30px;
+    border-bottom: 2px solid #cccccc;
+    background-image: none;
+    padding: 0;
+}
+
+/*提交评论按钮样式*/
+#comment_btn {
+    width: 100px;
+    height: 38px;
+    padding: 8px 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #fff;
+    border: none;
+    background: #21759b;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -webkit-transition: all 0.4s ease;
+    -moz-transition: all 0.4s ease;
+    -o-transition: all 0.4s ease;
+    -ms-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+    outline: none;
+    text-decoration: none;
+}
+

@@ -1,0 +1,11 @@
+.myheader {
+    height: 100px;
+    background: #d43f3a;
+    margin-bottom: 20px;
+    line-height: 100px
+
+}
+.myheader div {
+    font-size: 50px;
+    margin: auto 10px;
+}

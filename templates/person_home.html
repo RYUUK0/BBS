@@ -1,0 +1,26 @@
+{% extends "personal.html" %}
+
+{% block art_comment %}
+    <!--文章正文-->
+    {% for article in art_list %}
+         <div class="media">
+         <!--依次为头像，概要，评论区域-->
+            <div class="media-left">
+                <a href="/blog/article/{{ article.id }}">
+                  <img class="media-object author-img" src="/media/{{ article.author.avator }}" alt="...">
+                </a>
+            </div>
+            <div class="media-body">
+
+                <a href="/blog/article/{{ article.id }}"><h4 class="media-heading">{{ article.title }}</h4></a>
+            {{ article.desc }}
+            </div>
+            <div class="modal-footer">
+                <span><a href="/blog/{{ article.author.username }}">{{ article.author.username }}</a></span>
+                <span>发布于{{ article.write_time }}</span>
+                <span class="glyphicon glyphicon-comment">评论</span>
+                <span class="glyphicon glyphicon-thumbs-up">点赞</span>
+            </div>
+         </div>
+    {% endfor %}
+{% endblock %}

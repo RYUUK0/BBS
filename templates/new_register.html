@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用form生成HTML标签</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/mystyle.css">
+</head>
+<body>
+
+<!--注册框-->
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+        <form action="/register/" method="post"class="form-horizontal reg-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ forms_obj.username.id_for_label }}" class="col-sm-2 control-label">{{ forms_obj.username.label }}</label>
+                <div class="col-sm-8">
+                    {{ forms_obj.username }}
+                    <span class="help-block"></span>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label for="{{ forms_obj.password.id_for_label }}" class="col-sm-2 control-label">{{ forms_obj.password.label }}</label>
+                <div class="col-sm-8">
+                    {{ forms_obj.password }}
+                    <span class="help-block"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="{{ forms_obj.re_password.id_for_label }}" class="col-sm-2 control-label">{{ forms_obj.re_password.label }}</label>
+                <div class="col-sm-8">
+                    {{ forms_obj.re_password }}
+                    <span class="help-block"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">头像</label>
+                <div class="col-sm-8">
+                    <label for="id_avator"><img id="avator-img" src="/static/img/default.png" ></label>
+                    <input type="file" id="id_avator" name="avator" accept="image/*" style="display: none">
+                    <span class="help-block"></span>
+                </div>
+            </div>
+            <div class="form-group" >
+                <div class="col-sm-10 col-sm-offset-2">
+                    <input type="button" class="btn btn-success" id="reg-submit" value="注册">
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script src="/static/jquery-3.3.1.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<script>
+
+    //选择头像，并加载预览图
+    $('#id_avator').change(function(){
+
+        //创建文件对象
+        var filereader = new FileReader();
+        //读取选中的文件
+        filereader.readAsDataURL(this.files[0]);
+        //等待图片加载完成,执行函数
+        filereader.onload = function(){
+            //找到要改变的标签下的图片
+            $('#avator-img').attr("src", filereader.result);
+        }
+
+
+    });
+
+    //用AJax提交数据
+    $('#reg-submit').click(function(){
+        //创建一个空的FormData对象，并将数据添加进去
+        var senddata = new FormData();
+        senddata.append('username', $('#id_username').val());
+        senddata.append('password', $('#id_password').val());
+        senddata.append('re_password', $('#id_re_password').val());
+        senddata.append('csrfmiddlewaretoken', $("[name = 'csrfmiddlewaretoken']").val());
+        senddata.append('avator', $('#id_avator')[0].files[0]);
+        $.ajax({
+            url: '/register/',
+            type: 'POST',
+            data: senddata,
+            datatype: JSON,
+            //发送文件对象的必要设置，
+            processData: false,
+            contentType: false,
+            success: function(data){
+                //console.log(data);
+                var data = JSON.parse(data)
+                if (data.status){
+                    location.href = data.mes;
+                }
+                else{
+                    //依次对错误信息执行函数
+                    $.each(data.mes, function(k, v){
+                        //找到对应标签的错误信息标签,并将上级DIV标签加上Class：has error
+                        $('#id_' + k).next('span').text(v[0]).parent().parent().addClass('has-error');
+                    })
+                }
+            }
+        })
+    });
+    //找到form下面的input标签，鼠标点击去掉has-error和错误信息
+
+    $("form input").focus(function() {
+        $(this).next("span").text("").parent().parent().removeClass('has-error');
+    });
+</script>
+</body>
+</html>

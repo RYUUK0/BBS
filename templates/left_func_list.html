@@ -1,0 +1,32 @@
+<!--分类列表-->
+<div class="panel panel-primary">
+    <div class="panel-heading">文章分类</div>
+    {% for cate in cate_list %}
+        <div class="panel-body">
+            <a href="">{{ cate.title }}</a>
+            <span>{{ cate.cate_num }}</span>
+        </div>
+    {% endfor %}
+</div>
+
+<!--标签列表-->
+<div class="panel panel-warning">
+    <div class="panel-heading">标签</div>
+    {% for cate in cate_list %}
+        <div class="panel-body">
+            <a href="">{{ cate.title }}</a>
+            <span>{{ cate.cate_num }}</span>
+        </div>
+    {% endfor %}
+</div>
+
+<!--日期归档列表-->
+<div class="panel panel-danger">
+    <div class="panel-heading">日期</div>
+    {% for date in date_list %}
+        <div class="panel-body">
+            <a href="">{{ date.month }}</a>
+            <span>{{ date.date_num }}</span>
+        </div>
+    {% endfor %}
+</div>

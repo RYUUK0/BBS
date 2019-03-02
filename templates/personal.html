@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ username }}的个人博客</title>
+    <link rel="stylesheet" href="/static/mystyle.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/theme/{{ username }}.css">
+    <link rel="stylesheet" href="/static/up.css">
+</head>
+<body>
+    <div class="myheader">
+        <div>{{ username }}的博客</div>
+    </div>
+    <!--用自定义函数生成HTML标签-->
+    <div class="col-sm-2">
+    {% load my_tags %}
+    {% get_func_list username %}
+    </div>
+
+    <!--正文替换部分-->
+    <div class="col-sm-9">
+        {% block art_comment %}
+        {% endblock %}
+    </div>
+
+
+    <script src="/static/jquery-3.3.1.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    {% block self_script %}
+    {% endblock %}
+</body>
+</html>

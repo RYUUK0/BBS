@@ -1,0 +1,20 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+.header {
+    background: #5bc0de;
+    height: 30px;
+    width: 100%;
+}
+.content {
+    width: 80%;
+    height: 300px;
+    margin: 10px auto;
+}
+#add_article_title {
+    width: 75%;
+}
+.add_article_title_div {
+    margin: 10px;
+}

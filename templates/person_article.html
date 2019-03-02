@@ -1,0 +1,206 @@
+{% extends 'personal.html' %}
+
+<!--文章正文替换-->
+{% block art_comment %}
+    <!--文章主体-->
+    <div class="media">
+        <!--依次为头像，概要，评论区域-->
+        <div class="media-left">
+            <img class="media-object author-img" src="/media/{{ art.author.avator }}" alt="...">
+        </div>
+        <div class="media-body">
+            <h4 class="media-heading">{{ art.title }}</h4>
+            {{ art.artdetail.detail }}
+        </div>
+        <div class="modal-footer">
+            <span><a href="/blog/{{ article.author.username }}">{{ article.author.username }}</a></span>
+            <span>发布于{{ article.write_time }}</span>
+            <span class="glyphicon glyphicon-comment">评论</span>
+            <span class="glyphicon glyphicon-thumbs-up">点赞</span>
+        </div>
+    </div>
+
+    <!--点赞部分-->
+    <div class="clearfix">
+        <div id="blog_post_info_block">
+            <div id="div_digg">
+                <div class="diggit sendout">
+                    <span class="diggnum" id="digg_count">
+                        {% if gorb_list.0.good_num %}
+                            {{ gorb_list.0.good_num }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="buryit sendout">
+                    <span class="burynum" id="bury_count">
+                        {% if gorb_list.1.good_num %}
+                            {{ gorb_list.1.good_num }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="clear"></div>
+                <div class="diggword" id="digg_tips"></div>
+            </div>
+        </div>
+    </div>
+    {% csrf_token %}
+
+    <!--所有评论区域-->
+    <p>评论树</p>
+    <div class="comments_tree">
+        <ul class="list-group comments_tree_ul">
+
+        </ul>
+    </div>
+    <hr>
+    <p>评论楼</p>
+    <div class="comments_list">
+        <ul class="list-group">
+            {% for discuss in father_discuss %}
+                <div class="everybody_discuss" style="margin-top: 15px">
+                    <div class="everybody_discuss_userinfo" style="margin-bottom: 15px;">
+                        <!--回复功能区-->
+                        <div><a style="float: right" class="everybody_discuss_callback" username="{{ discuss.user.username }}" discuss_id="{{ discuss.id }}" art_id="{{ discuss.article_id }}">回复</a></div>
+                        <a href="">{{ forloop.counter }}楼</a>
+                        <a href="/blog/{{ discuss.user.username }}">{{ discuss.user.username }}</a>
+                        <span>{{ discuss.create_time }}</span>
+
+                    </div>
+                    <div class="everybody_discuss_detail">
+                        <li class="list-group-item"> {{ discuss.comment }}</li>
+                    </div>
+                </div>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!--增加评论部分-->
+    {% if request.userinfo.username %}
+        <div class="div_comment">
+            <div id="comment_title">发表评论</div>
+            <p>账号: <input type="text" id="tbCommentAuthor" class="author" disabled="disabled" size="50" value="{{ request.userinfo.username }}"></p>
+
+            <div class="comment_box">
+                <textarea name="" id="comment_content" cols="60" rows="10"></textarea>
+            </div>
+            <div class="comment_box_btn">
+                <button id="comment_btn">提交评论</button>
+            </div>
+        </div>
+
+
+    {% else %}
+        <a href="/login/">请先登录</a>
+    {% endif %}
+{% endblock %}
+
+
+{% block self_script %}
+    <script>
+        //页面加载时向服务器请求所有此文章的所有评论数据
+        $.ajax({
+            url: '/blog/comment_list/{{ art.id }}/',
+            success: function(data) {
+                data = JSON.parse(data);
+                console.log(data);
+                //首先判断是否为根评论
+                $.each(data, function(index, comment_dict){
+                    //子评论,查找comment_id == father_id的标签， 即找到父标签然后添加到父标签中
+                    if (comment_dict.father_id)  {
+                        //与跟标签类似，无最外层的li标签, 并添加到父标签的div中
+                        var every_son_comment = '<div class="comments_tree_item" comment_id=' + comment_dict.id + '><span class="comment">' + comment_dict.comment + '</span></div>';
+                        $('[comment_id = ' + comment_dict.father_id + ']').append(every_son_comment);
+                    }
+                    //根评论,创建一个li > div > span标签加上字典中的内容，在ul标签中添加
+                    else {
+                        var every_father_comment = '<li class="list-group-item"><div class="comments_tree_item" comment_id=' + comment_dict.id + '><span class="comment">'+ comment_dict.comment + '</span></div></li>';
+                        $('.comments_tree_ul').append(every_father_comment);
+                    }
+                })
+            }
+        });
+
+
+        //ajax提交点赞信息
+        $('.sendout').click(function(){
+            //判断点击的是哪个按钮
+            var is_up = $(this).hasClass('diggit');
+            var art_id = "{{ art.id }}";
+            var username = "{{ request.userinfo.username }}";
+            console.log(is_up);
+            $.ajax({
+                url: "/blog/gorb/",
+                type: "POST",
+                data: {
+                    outcome: is_up,
+                    article: art_id,
+                    username: username,
+                    csrfmiddlewaretoken: $("[name = 'csrfmiddlewaretoken']").val()
+                },
+                datatype: JSON,
+                success: function(data){
+                    var data = JSON.parse(data);
+                    //成功
+                   if(data['status']){
+                       console.log('成功');
+                       location.href = '{{ request.path }}';
+                   }
+                   else{
+                       $.each(data.mes, function(k, v){
+                            $('.diggword').text(v[0])
+                       })
+                   }
+                }
+            })
+        });
+
+        //设置父评论ID变量
+        var father_id = "";
+        //ajax提交评论
+        $('#comment_btn').click(function(){
+            var art_id = {{ art.id }};
+            var user_id = {{ request.userinfo.id }};
+            var content = $('#comment_content').val();
+            //如果有father_id， 即有父评论
+            if (father_id) {
+                var n = content.indexOf("\n");
+                content = content.slice(n + 1, );
+                console.log(content)
+            }
+            $.ajax({
+                url: '/blog/detail/',
+                type: 'POST',
+                datatype: JSON,
+                data: {
+                    'csrfmiddlewaretoken': $("[name = 'csrfmiddlewaretoken']").val(),
+                    'content': content,
+                    'art_id': art_id,
+                    'user_id': user_id,
+                    'father_id': father_id,
+
+                },
+                success: function(data){
+                    //data = JSON.parse(data);
+                    console.log(data);
+                    $('#comment_content').val("");
+                    father_id = "";
+                }
+
+            })
+        });
+
+
+        //给回复绑定函数
+        $('.everybody_discuss_callback').click(function(){
+            $('#comment_content').focus();
+            //对于回复的对象在输入框加上@和用户名
+            var father_name = "@" + $(this).attr("username") + "\n";
+            father_id = $(this).attr("discuss_id");
+            $('#comment_content').val(father_name);
+        })
+    </script>
+{% endblock %}

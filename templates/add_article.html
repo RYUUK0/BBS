@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加文章页面</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/backstage_css.css">
+</head>
+<body>
+    <div class="header">
+        <h3>添加文章</h3>
+    </div>
+    <div class="content">
+        <form action="" class="all_add_article_info">
+            <div class=" add_article_title_div">
+                <label for="add_article_title">文章标题</label>
+                <input type="text" name="add_article_title" id="add_article_title" class="form-control">
+            </div>
+            <div class="">
+                <p><label for="add_article_content">内容</label></p>
+                <textarea name="add_article_content" id="add_article_content" cols="120" rows="10"></textarea>
+            </div>
+            <input type="submit" class="add_article_btn btn-info btn" id="sendtext" value="提交">
+        </form>
+    </div>
+
+    <script charset="utf-8" src="/static/kindeditor/kindeditor-all-min.js"></script>
+    <script charset="utf-8" src="/static/kindeditor/lang/zh-CN.js"></script>
+    <script>
+        KindEditor.ready(function(K) {
+            //关联文本框
+            window.editor = K.create('#add_article_content');
+        });
+
+        $('#sendtext').click(function(){
+            $.ajax({
+                url: 'backstage/add_article/'
+            })
+        })
+    </script>
+</body>
+</html>

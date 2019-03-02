@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/mystyle.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <form class="form-horizontal col-md-6 col-md-offset-3 login-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ forms_obj.username.id_for_label }}" class="col-sm-2 control-label">{{ forms_obj.username.label }}</label>
+                    <div class="col-sm-10">
+                        {{ forms_obj.username }}
+                        <span class="help-block"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="{{ forms_obj.password.id_for_label }}" class="col-sm-2 control-label">{{ forms_obj.password.label }}</label>
+                    <div class="col-sm-10">
+                        {{ forms_obj.password }}
+                        <span class="help-block"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-2">
+                        <button type="button" class="btn btn-default" id="login-button" >登录</button>
+                    </div>
+                </div>
+                <div id="popup-captcha"></div>
+
+            </form>
+        </div>
+    </div>
+
+
+    <script src="/static/jquery-3.3.1.js">
+    </script><script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <!-- 引入封装了failback的接口--initGeetest -->
+    <script src="http://static.geetest.com/static/tools/gt.js"></script>
+    <script>
+        //ajax发送登录信息并处理
+        var handlerPopup = function (captchaObj){
+            captchaObj.onSuccess(function(){
+                var validate = captchaObj.getValidate();
+                $.ajax({
+                url: '/login/',
+                type: 'POST',
+                datatype: 'JSON',
+                data:{
+                    username: $('#id_username').val(),
+                    password: $('#id_password').val(),
+                    geetest_challenge: validate.geetest_challenge,
+                    geetest_validate: validate.geetest_validate,
+                    geetest_seccode: validate.geetest_seccode,
+                    csrfmiddlewaretoken: $("input[name = 'csrfmiddlewaretoken']").val()
+                },
+                success: function(data){
+                    var res = JSON.parse(data);
+                    if(res.status ){
+                        console.log('登录成功');
+                        location.href = res['mes']
+                    }
+                    else{
+                        console.log(res.mes);
+                        $.each(res.mes, function(k, v){
+                            $('#id_'+ k).next('span').text(v[0]).parent().parent().addClass('has-error')
+                        })
+                    }
+                }
+            })
+            });
+            //按键绑定函数
+            $('#login-button').click(function(){
+               captchaObj.show();
+            });
+            //将验证码加到该标签内
+            captchaObj.appendTo('#popup-captcha')
+
+        };
+
+        //当输入框获得鼠标焦点时，清除之前错误
+        $('#id_username, #id_password').focus(function(){
+            $(this).next('span').text("").parent().parent().removeClass('has-error');
+        })
+
+        // 验证开始需要向网站主后台获取id，challenge，success（是否启用failback）
+        $.ajax({
+        url: "/pc-geetest/register?t=" + (new Date()).getTime(), // 加随机数防止缓存
+        type: "get",
+        dataType: "json",
+        success: function (data) {
+            // 使用initGeetest接口
+            // 参数1：配置参数
+            // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它做appendTo之类的事件
+            initGeetest({
+                gt: data.gt,
+                challenge: data.challenge,
+                product: "popup", // 产品形式，包括：float，embed，popup。注意只对PC版验证码有效
+                offline: !data.success // 表示用户后台检测极验服务器是否宕机，一般不需要关注
+                // 更多配置参数请参见：http://www.geetest.com/install/sections/idx-client-sdk.html#config
+            }, handlerPopup);
+        }
+    });
+    </script>
+</body>
+</html>
