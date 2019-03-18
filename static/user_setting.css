@@ -1,0 +1,75 @@
+/*遮罩层*/
+.hide {
+    display: None;
+}
+
+
+
+/*头部样式*/
+.head {
+    background: whitesmoke;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.user-func {
+    position: absolute;
+    height: 50px;
+    top: 0px;
+    right: 10px;
+    line-height: 50px;
+}
+.func_item {
+    float: left;
+    margin: auto 30px;
+    font-size: 20px;
+
+}
+
+
+/*设置区样式*/
+#set_area_list {
+    margin: 50px 150px 10px;
+}
+
+.set_area {
+    height: 70px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+    background: lightyellow;
+
+}
+/*需要改变信息*/
+.change_name {
+    float: right;
+    margin-right: 20px;
+}
+.change_info {
+    padding-top: 5px;
+    padding-left: 20px;
+    height: 50%;
+    border-bottom: solid 1px black;
+}
+/*原来信息*/
+.old_info {
+    padding-left: 20px;
+    font-weight: 700;
+}
+.old_name {
+    float: right;
+    margin-right:20px;
+}
+/*编辑对话框*/
+.new_info {
+    height: 18px;
+    line-height: 18px;
+}
+
+/*按钮样式*/
+.put_button {
+    margin-top: 5px;
+    padding-left: 20px;
+}
+#label_user {
+    margin-bottom: 0px;
+    padding-left: 20px;
+}

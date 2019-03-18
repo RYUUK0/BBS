@@ -7,8 +7,8 @@ from django.contrib.auth.models import AbstractUser
 #用户表
 class UserInfo(AbstractUser):
     """
-    username: 账户名 AbstractUser中自带
-    userpass: 密码 AbstractUser中自带
+    username: 账户名
+    userpass: 密码
     avator: 头像图片
     create_time: 创建用户时间
     blog: 用户的博客ID

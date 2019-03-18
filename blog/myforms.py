@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from blog import models
 
-#定义一个用于注册的表单类
+#注册的表单类
 class Register(forms.Form):
     username = forms.CharField(
         max_length = 16,
@@ -70,7 +70,7 @@ class Register(forms.Form):
             return self.cleaned_data['username']
 
 
-#定义一个用于登录的表单类
+#登录的表单类
 class Login(forms.Form):
     username = forms.CharField(
         max_length = 16,
@@ -130,7 +130,7 @@ class Login(forms.Form):
             self.add_error('password', ValidationError('密码错误'))
 
 
-#定义用于处理点赞验证的表单类
+#处理点赞验证的表单类
 class GorB(forms.Form):
 
     username = forms.CharField(
@@ -168,10 +168,9 @@ class GorB(forms.Form):
             return self.cleaned_data
 
 
-
-
-#验证评论的表单
+#评论的表单
 class Detail(forms.Form):
+
     user_id = forms.IntegerField(required = True,)
     art_id = forms.IntegerField(required = True, )
     father_id = forms.IntegerField(required = False,)
@@ -182,4 +181,101 @@ class Detail(forms.Form):
                                   'min_length': '评论最少十个字',
                               }
                               )
+
+class Set_Username(forms.Form):
+    user_id = forms.IntegerField(required = True)
+    new_username = forms.CharField(required = True,
+                               max_length = 20,
+                               min_length = 5,
+                               error_messages = {
+                                   'required': '请输入新用户名',
+                                   'min_length': '最小长度为5',
+                                   'max_length': '最大长度为20',
+                               })
+
+class Set_Password(forms.Form):
+    user_id = forms.IntegerField(required=True)
+    old_password = forms.IntegerField(required = True,
+                                      error_messages = {
+                                          'required': '请输入旧密码',
+                                      })
+    new_password = forms.IntegerField(required = True,
+                                      error_messages = {
+                                          'required': '请输入旧密码',
+                                      })
+    re_password = forms.IntegerField(required = True,
+                                      error_messages = {
+                                          'required': '请输入旧密码',
+                                      })
+
+    def clean_old_password(self):
+        print('data is >>>>>>>>>>>>>>>>>>', self.data)
+        user_pk = self.data.get('user_id')
+        user_password = models.UserInfo.objects.filter(pk = user_pk).values('password').first()['password']
+        if self.data.get('old_password') != user_password:
+            self.add_error('old_password', ValidationError('原密码错误'))
+        else:
+            return self.cleaned_data['old_password']
+
+    def clean(self):
+        re_password = self.cleaned_data['re_password']
+        new_password = self.cleanec_data['new_password']
+        if re_password and re_password != new_password:
+            self.add_error('re_password', ValidationError('两次密码不一致'))
+        else:
+            return self.cleaned_data
+
+
+class Set_Email(forms.Form):
+    user_id = forms.IntegerField(required=True)
+    new_email = forms.CharField(required = True,
+                               max_length = 30,
+                               min_length = 5,
+                               error_messages = {
+                                   'required': '请输入新邮箱地址',
+                                   'min_length': '最小长度为5',
+                                   'max_length': '最大长度为20',
+                               })
+
+
+
+#设置数据校验
+class Clean_Set():
+
+    def __init__(self, change, data):
+        self.change = change
+        self.data = data
+        self.user_id = self.data.get('user_id')
+        self.user_obj = None or models.UserInfo.objects.filter(pk = self.user_id)
+        self.errors = None
+
+
+    def updata_data(self):
+        if self.change == 'name':
+            check = Set_Username(self.data)
+            if check.is_valid() and self.user_obj:
+                self.user_obj.update(username = check.cleaned_data['new_username'])
+                return True
+            else:
+                self.errors = check.errors
+
+        elif self.change == 'password':
+            check = Set_Password(self.data)
+            if check.is_valid() and self.user_obj:
+                self.user_obj.update(password = check.cleaned_data['new_password'])
+                return True
+            else:
+                self.errors = check.errors
+
+        elif self.change == 'email':
+            check = Set_Email(self.data)
+            if check.is_valid() and self.user_obj:
+                self.user_obj.update(email = check.cleaned_data['new_email'])
+                return True
+            else:
+                self.errors = check.errors
+
+        else:
+            self.errors = '发生未知错误'
+            return False
 

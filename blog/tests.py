@@ -1,12 +1,18 @@
-from django.test import TestCase
-from bs4 import BeautifulSoup
+# from django.test import TestCase
+# # from bs4 import BeautifulSoup
+# #
+# # # Create your tests here.
+# #
+# # text = '''
+# #     <span>这是spanspanspan</span>
+# #     <div>这是divdivdivdiv</div>
+# #
+# # '''
+# # ret = BeautifulSoup(text, 'html.parser')
+# # print(ret.text)
 
-# Create your tests here.
+from blog import models
 
-text = '''
-    <span>这是spanspanspan</span>
-    <div>这是divdivdivdiv</div>
-
-'''
-ret = BeautifulSoup(text, 'html.parser')
-print(ret.text)
+user_pk = 2
+user_password = models.UserInfo.objects.filter(pk = user_pk).values('password')
+print(user_password)

@@ -1,0 +1,36 @@
+/*头部样式*/
+.head {
+    background: whitesmoke;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.user-func {
+    position: absolute;
+    height: 50px;
+    top: 0px;
+    right: 10px;
+    line-height: 50px;
+}
+.func_item {
+    float: left;
+    margin: auto 30px;
+    font-size: 20px;
+
+}
+
+
+
+/*下方显示区样式*/
+.view_body {
+    margin-top: 50px;
+    margin-left: 215px;
+    margin-right: 100px;
+}
+.cate_list {
+    width: 200px;
+    background: #5cb85c;
+    position: absolute;
+    left: 5px;
+    top: 80px;
+    border: black solid 1px;
+}

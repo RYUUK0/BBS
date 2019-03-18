@@ -63,7 +63,6 @@ def login(request):
         form_obj = myforms.Login()
         return render(request, 'login.html', {'forms_obj': form_obj})
 
-
 # 注册函数
 def register(request):
     if request.method == 'GET':
@@ -95,7 +94,6 @@ def register(request):
             res['mes'] = reg_obj.errors
             return HttpResponse(json.dumps(res))
 
-
 # 注销函数
 def logoff(request):
     if request.session.get('login_user_name'):
@@ -109,6 +107,42 @@ def index(request):
         article_list = models.Article.objects.all()
         return render(request, 'index.html', {'all_art': article_list})
 
+def settings(request):
+    if request.method == 'GET':
+        return render(request, 'user_set.html')
+
+    else:
+        change_field = request.POST.get('change')
+        data = request.POST.get('data')
+        res = {'success': False, 'reason': None}
+        if data and change_field:
+            data= json.loads(data)
+            # print(data)
+            # if change_field == 'name':
+            #     new_username = data.get('new_username')
+            #     print(new_username)
+            #     print('修改名字')
+            # elif change_field == 'password':
+            #     old_password = data.get('old_password')
+            #     new_password = data.get('new_password')
+            #     re_password = data.get('re_password')
+            #     print(old_password, new_password, re_password)
+            #     print('修改密码')
+            # elif change_field == 'email':
+            #     new_email = data.get('new_email')
+            #     print(new_email)
+            #     print('修改邮箱')
+            set_data = myforms.Clean_Set(change_field, data)
+            #返回FALSE
+            if set_data.updata_data():
+                res['reason'] = '修改成功'
+                res['success'] = True
+            else:
+                res['reason'] = set_data.errors
+        else:
+            res['reason'] = '请输入正确数据'
+
+        return HttpResponse(json.dumps(res))
 
 # 个人首页函数
 def personal(request, username):
@@ -226,18 +260,13 @@ def add_article(request):
     return redirect('')
 
 
-
 # 测试函数
 def test(request):
-    article = {
-        'title': '任天堂否认库巴公主存在 称只有奇诺比可能变身',
-        'desc': '由玩家大开脑洞创造的库巴公主在全球玩家间掀起了热潮，不少粉丝还希望任天堂有朝一日能把她加入到某部游戏里去，不过这些玩家可能要失望了。',
-        'author': models.UserInfo.objects.filter(id=1).first(),
-        'category': models.Category.objects.filter(title='游戏').first()
-    }
-    res = models.Article.objects.create(**article)
-    if res:
-        print('添加成功')
-    else:
-        print('is False')
+    user_pk = 2
+    user_password = models.UserInfo.objects.filter(pk=user_pk).values('password').first()
+    print(user_password)
+
+    print('is False')
     return HttpResponse('ooookkkk')
+
+

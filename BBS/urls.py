@@ -29,6 +29,8 @@ urlpatterns = [
     re_path(r'^index/$', views.index),
     #注销函数
     re_path(r'^logoff/$', views.logoff),
+    #设置
+    re_path(r'settings/$', views.settings),
 
     #使用路由分发
     re_path(r'^blog', include(blog_url)),

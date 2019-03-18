@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>账户设置</title>
+    <link rel="stylesheet" href="/static/user_setting.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="head">
+        <div class="logo">
+            <a href="/index/"><img src="/static/img/logo_small.gif"></a>
+        </div>
+        <div class="user-func">
+
+                {% if request.userinfo %}
+                    <span class="func_item"><a href="/blog/{{ request.userinfo.username }}/">我的博客</a></span>
+                    <span class="func_item"><a href="/blog/{{ request.userinfo.username }}/">设置</a></span>
+                    <span class="func_item"><a href="/logoff/">注销</a></span>
+
+                {% else %}
+                <span  class="func_item"><a href="/register/">注册</a></span >
+                <span  class="func_item"><a href="/login/">登录</a></span >
+                {% endif %}
+        </div>
+    </div>
+    <form id="set_area_list">
+        {% csrf_token %}
+        <div class="set_area">
+            <h3 class="change_info">
+                <div class="change_name"><a onclick="display_name()">修改</a></div>
+                用户名
+            </h3>
+            <div class="old_info" id="old_name">
+                <div class="old_name">{{ request.userinfo.username }}</div>
+                <span>你的用户名</span>
+            </div>
+            <div class="edit_info hide" id="change_name">
+                <label id="label_user" for="new_username">新的用户名:</label>
+                <input type="text" class="new_info" id="new_username">
+                <div class="old_name" style="font-weight: 700">{{ request.userinfo.username }}</div>
+                <div class="put_button">
+                    <input type="button" value="保存" onclick="send_name()">
+                    <input type="button" value="取消" onclick="display_name()">
+                </div>
+            </div>
+
+        </div>
+        <div class="set_area">
+            <h3 class="change_info">
+                <div class="change_name"><a onclick="display_password()">修改</a></div>
+                密码
+            </h3>
+            <div class="old_info" id="old_password">
+                <div class="old_name">********</div>
+                <span>你的密码</span>
+            </div>
+            <div class="edit_info hide" id="change_password">
+                <label id="label_user" for="input_old_password">旧密码:</label>
+                <input type="text" class="new_info" id="input_old_password">
+                <label id="label_user" for="input_new_password">新密码:</label>
+                <input type="text" class="new_info" id="input_new_password">
+                <label id="label_user" for="input_re_password">确认密码:</label>
+                <input type="text" class="new_info" id="input_re_password">
+                <div class="old_name" style="font-weight: 700">********</div>
+                <div class="put_button">
+                    <input type="button" value="保存" onclick="send_password()">
+                    <input type="button" value="取消" onclick="display_password()">
+                </div>
+            </div>
+
+        </div>
+        <div class="set_area">
+            <h3 class="change_info">
+                <div class="change_name"><a onclick="display_email()">修改</a></div>
+                邮箱
+            </h3>
+            <div class="old_info" id="old_email">
+                <div class="old_name">{{ request.userinfo.email }}</div>
+                <span>你的邮箱</span>
+            </div>
+            <div class="edit_info hide" id="change_email">
+                <label id="label_user" for="new_email">新邮箱:</label>
+                <input type="text" class="new_info" id="new_email">
+                <div class="old_name" style="font-weight: 700">{{ request.userinfo.email }}</div>
+                <div class="put_button">
+                    <input type="button" value="保存" onclick="send_email()">
+                    <input type="button" value="取消" onclick="display_email()">
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+    <script src="/static/jquery-3.3.1.js"></script>
+    <script>
+        var csrf_val = $("input[name='csrfmiddlewaretoken']").val();
+        var send_data = {};
+        var input_data = {}
+        send_data['csrfmiddlewaretoken'] = csrf_val;
+        //显示输入框函数
+        function display_name() {
+            $("#change_name").toggleClass("hide");
+            $("#old_name").toggleClass("hide");
+        }
+        function display_password() {
+            $("#change_password").toggleClass("hide");
+            $("#old_password").toggleClass("hide");
+        }
+        function display_email() {
+            $("#change_email").toggleClass("hide");
+            $("#old_email").toggleClass("hide");
+        }
+        //发送数据
+        function send_name() {
+            var new_username = $('input#new_username').val();
+            console.log(new_username);
+            input_data['new_username'] = new_username;
+            send_data['change'] = 'name';
+            gogogo();
+        }
+        function send_password() {
+            var old_password = $('input#input_old_password').val();
+            var new_password = $('input#input_new_password').val();
+            var re_password = $('input#input_re_password').val();
+            console.log(old_password, new_password, re_password);
+            input_data['old_password'] = old_password;
+            input_data['new_password'] = new_password;
+            input_data['re_password'] = re_password;
+            send_data['change'] = 'password';
+            gogogo();
+        }
+        function send_email() {
+            var new_email = $('input#new_email').val();
+            console.log(new_email);
+            input_data['new_email'] = new_email;
+            send_data['change'] = 'email';
+            gogogo();
+        }
+        function gogogo() {
+            input_data['user_id'] = {{ request.userinfo.pk }}
+            send_data['data'] = JSON.stringify(input_data);
+            console.log(send_data);
+            $.ajax({
+                url: '/settings/',
+                type: 'POST',
+                data: send_data,
+                success: function(data) {
+                    var data = JSON.parse(data);
+                    console.log(data)
+                    if (data.success) {
+                        location.href = '/index/';
+                    }
+                    else {
+                        $.each(data.reason, function(k, v) {
+                            alert(v[0]);
+                        });
+                    }
+                }
+            })
+        }
+    </script>
+</body>
+</html>
