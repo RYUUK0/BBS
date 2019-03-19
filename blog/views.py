@@ -93,20 +93,19 @@ def register(request):
             print("未通过验证")
             res['mes'] = reg_obj.errors
             return HttpResponse(json.dumps(res))
-
 # 注销函数
 def logoff(request):
     if request.session.get('login_user_name'):
         del request.session['login_user_name']
     return redirect('/index/')
-
-
 # 首页视图函数
 def index(request):
     if request.method == 'GET':
         article_list = models.Article.objects.all()
-        return render(request, 'index.html', {'all_art': article_list})
-
+        cate_list = models.Category.objects.all().values('title')
+        print(cate_list)
+        return render(request, 'index.html', {'all_art': article_list, 'cate_list': cate_list})
+# 设置函数
 def settings(request):
     if request.method == 'GET':
         return render(request, 'user_set.html')
@@ -147,15 +146,17 @@ def settings(request):
 # 个人首页函数
 def personal(request, username):
 
-    # 确认是否有用户
     user = models.UserInfo.objects.filter(username=username).first()
-    # 如果不存在
     if not user:
         return HttpResponse("404")
-    # 获取所有文章
-    art_list = models.Article.objects.filter(author__username=username).all()
-    return render(request, 'person_home.html', {'username': username,
-                                                'art_list': art_list,
+    art_list = models.Article.objects.filter(author__username=username)
+    cate_id = request.GET.get('cate_id')
+    print('分类ID是', cate_id)
+    if cate_id:
+        art_list = art_list.filter(category_id = cate_id)
+
+    return render(request, 'person_index.html', {'username': username,
+                                                'art_list': art_list.all(),
                                                 })
 
 
@@ -209,7 +210,6 @@ def get_gorb(request):
 
 
     return HttpResponse(json.dumps(res))
-
 
 #处理评论的函数
 def get_detail(request):

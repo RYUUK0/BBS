@@ -182,6 +182,7 @@ class Detail(forms.Form):
                               }
                               )
 
+
 class Set_Username(forms.Form):
     user_id = forms.IntegerField(required = True)
     new_username = forms.CharField(required = True,
@@ -224,7 +225,6 @@ class Set_Password(forms.Form):
             self.add_error('re_password', ValidationError('两次密码不一致'))
         else:
             return self.cleaned_data
-
 
 class Set_Email(forms.Form):
     user_id = forms.IntegerField(required=True)

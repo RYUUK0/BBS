@@ -19,10 +19,10 @@ def get_func_list(username):
     for user_cate in cate:
         # 创建一个空的字典用于临时储存类别名字，及所包含的文章数量
         cate_info = {}
-        cate_title = models.Category.objects.filter(id=user_cate['category']).values('title').first()
+        cate_dict = models.Category.objects.filter(id=user_cate['category']).values('title', 'pk').first()
         # print(cate_title['title'])
-
-        cate_info['title'] = cate_title['title']
+        cate_info['id'] = cate_dict['pk']
+        cate_info['title'] = cate_dict['title']
         cate_info['cate_num'] = user_cate['cate_num']
         # 将信息添加到传入给前端的数据列表中
         cate_list.append(cate_info)
@@ -31,5 +31,6 @@ def get_func_list(username):
     date_list = models.Article.objects.filter(author__username=username).extra(
         select={"month": "date_format(write_time,'%%Y-%%m')"}
     ).values('month').annotate(date_num=Count("id")).values('month', 'date_num')
+    #print(date_list)
 
-    return {'cate_list': cate_list, 'date_list': date_list }
+    return {'cate_list': cate_list, 'date_list': date_list, 'username': username }

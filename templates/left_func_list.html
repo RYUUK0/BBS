@@ -3,14 +3,17 @@
     <div class="panel-heading">文章分类</div>
     {% for cate in cate_list %}
         <div class="panel-body">
-            <a href="">{{ cate.title }}</a>
-            <span>{{ cate.cate_num }}</span>
+            <a href="?cate_id={{ cate.id }}">{{ cate.title }}</a>
+            <span style="float: right">{{ cate.cate_num }}</span>
         </div>
     {% endfor %}
+        <div class="panel-body">
+            <a href="/blog/{{ username }}">全部</a>
+        </div>
 </div>
 
 <!--标签列表-->
-<div class="panel panel-warning">
+<!--<div class="panel panel-warning">
     <div class="panel-heading">标签</div>
     {% for cate in cate_list %}
         <div class="panel-body">
@@ -18,7 +21,7 @@
             <span>{{ cate.cate_num }}</span>
         </div>
     {% endfor %}
-</div>
+</div>-->
 
 <!--日期归档列表-->
 <div class="panel panel-danger">
@@ -26,7 +29,10 @@
     {% for date in date_list %}
         <div class="panel-body">
             <a href="">{{ date.month }}</a>
-            <span>{{ date.date_num }}</span>
+            <span style="float: right">{{ date.date_num }}</span>
         </div>
     {% endfor %}
+        <div class="panel-body">
+            <a href="/blog/{{ username }}">全部</a>
+        </div>
 </div>

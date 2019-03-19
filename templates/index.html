@@ -21,8 +21,8 @@
                     <span class="func_item"><a href="/logoff/">注销</a></span>
 
                 {% else %}
-                <span  class="func_item"><a href="/register/">注册</a></span >
-                <span  class="func_item"><a href="/login/">登录</a></span >
+                    <span  class="func_item"><a href="/register/">注册</a></span >
+                    <span  class="func_item"><a href="/login/">登录</a></span >
                 {% endif %}
         </div>
     </div>
@@ -30,9 +30,20 @@
     <div class="view_body">
         <!--右侧分类-->
         <div class="cate_list pull-left">
-            <div>dddd</div>
-            <div>sdsddsd</div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">文章分类</div>
+                    {% for cate in cate_list %}
+                    <div class="panel-body">
+                        <a href="?cate_id={{ cate.id }}">{{ cate.title }}</a>
+                        <span style="float: right">{{ cate.cate_num }}</span>
+                    </div>
+                    {% endfor %}
+                    <div class="panel-body">
+                        <a href="/blog/{{ username }}">全部</a>
+                    </div>
+            </div>
         </div>
+
 
         <!--中间正文区域-->
         <div class="article_list">

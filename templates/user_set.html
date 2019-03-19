@@ -15,7 +15,7 @@
 
                 {% if request.userinfo %}
                     <span class="func_item"><a href="/blog/{{ request.userinfo.username }}/">我的博客</a></span>
-                    <span class="func_item"><a href="/blog/{{ request.userinfo.username }}/">设置</a></span>
+                    <span class="func_item"><a href="/settings/">设置</a></span>
                     <span class="func_item"><a href="/logoff/">注销</a></span>
 
                 {% else %}

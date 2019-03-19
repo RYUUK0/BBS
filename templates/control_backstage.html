@@ -5,51 +5,28 @@
     <title>后台管理页面</title>
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/mystyle.css">
+    <link rel="stylesheet" href="/static/index.css">
 </head>
 <body>
     <!--导航条部分-->
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <!-- 左侧logo区域 -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">Brand</a>
-            </div>
+    <div class="head">
+        <div class="logo">
+            <a href="/index/"><img src="/static/img/logo_small.gif"></a>
+        </div>
+        <div class="user-func">
 
-            <!-- 右侧选项区 -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <!-- 靠近logo的两个选项 -->
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">Link</a></li>
-                </ul>
-                <!-- 个人功能列表 -->
-                <ul class="nav navbar-nav navbar-right">
-                    {% if request.userinfo %}
-                        <li><a href="http://www.baidu.com">百度</a></li>
-                        <li class="dropdown">
-                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ request.userinfo.username }}<span class="caret"></span></a>
-                              <ul class="dropdown-menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="backstage/total/">后台管理</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="/logoff/">注销</a></li>
-                              </ul>
-                        </li>
-                    {% else %}
-                        <li><a href="/login/">登录</a></li>
-                        <li><a href="/register/">注册</a></li>
-                    {% endif %}
-                </ul>
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
+                {% if request.userinfo %}
+                    <span class="func_item"><a href="/blog/{{ request.userinfo.username }}/">我的博客</a></span>
+                    <span class="func_item"><a href="/backstage/total">后台管理</a></span>
+                    <span class="func_item"><a href="/settings/">设置</a></span>
+                    <span class="func_item"><a href="/logoff/">注销</a></span>
+
+                {% else %}
+                <span  class="func_item"><a href="/register/">注册</a></span >
+                <span  class="func_item"><a href="/login/">登录</a></span >
+                {% endif %}
+        </div>
+    </div>
 
     <div class="function-list" style="width: 25%">
 
