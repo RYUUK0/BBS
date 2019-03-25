@@ -12,15 +12,13 @@
             <a href="/index/"><img src="/static/img/logo_small.gif"></a>
         </div>
         <div class="user-func">
-
                 {% if request.userinfo %}
                     <span class="func_item"><a href="/blog/{{ request.userinfo.username }}/">我的博客</a></span>
                     <span class="func_item"><a href="/settings/">设置</a></span>
                     <span class="func_item"><a href="/logoff/">注销</a></span>
-
                 {% else %}
-                <span  class="func_item"><a href="/register/">注册</a></span >
-                <span  class="func_item"><a href="/login/">登录</a></span >
+                    <span  class="func_item"><a href="/register/">注册</a></span >
+                    <span  class="func_item"><a href="/login/">登录</a></span >
                 {% endif %}
         </div>
     </div>
